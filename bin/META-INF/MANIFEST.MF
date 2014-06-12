@@ -3,3 +3,4 @@ Implementation-Title: ButtonGroup
 Implementation-Version: 1.0
 Vaadin-Package-Version: 1
 Vaadin-Widgetsets: org.vaadin.addons.buttongroup.ButtonGroupLayoutWidgetset
+Vaadin-Stylesheets: VAADIN/addons/buttongrouplayout/buttongrouplayoutstyles.scss

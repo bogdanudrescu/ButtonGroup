@@ -2,9 +2,6 @@
 <!DOCTYPE module PUBLIC "-//Google Inc.//DTD Google Web Toolkit 1.7.0//EN" "http://google-web-toolkit.googlecode.com/svn/tags/1.7.0/distro-source/core/src/gwt-module.dtd">
 <module>
 
-	<!-- ButtonGroup Style -->
-	<stylesheet src="buttongroup/styles.scss" />
-
 	<!-- Super GWT client set -->
     <inherits name="com.vaadin.DefaultWidgetSet" />
 

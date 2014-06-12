@@ -15,6 +15,8 @@ import com.vaadin.ui.Button.ClickListener;
  * Layout buttons in a group with the possibility to toggle them.
  * 
  * @author bogdanudrescu
+ * 
+ * DON'T USE THIS: @StyleSheet(value = { "vaadin://addons/buttongroup/styles.scss" })
  */
 @SuppressWarnings("serial")
 public class ButtonGroup implements Serializable {
