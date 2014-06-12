@@ -3,7 +3,7 @@
 <module>
 
 	<!-- ButtonGroup Style -->
-	<stylesheet src="styles.css" />
+	<stylesheet src="buttongroup/styles.scss" />
 
 	<!-- Super GWT client set -->
     <inherits name="com.vaadin.DefaultWidgetSet" />

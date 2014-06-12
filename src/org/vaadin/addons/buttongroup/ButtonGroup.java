@@ -3,6 +3,7 @@ package org.vaadin.addons.buttongroup;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.EventObject;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -21,7 +22,7 @@ public class ButtonGroup implements Serializable {
 	/*
 	 * The list of buttons in this group.
 	 */
-	private List<Button> buttons = new ArrayList<>();
+	private List<Button> buttons = new ArrayList<Button>();
 
 	/*
 	 * The current selected button.
@@ -33,20 +34,87 @@ public class ButtonGroup implements Serializable {
 	 */
 	private ToggleClickListener toggleClickListener = new ToggleClickListener();
 
-	/*
-	 * The list of listeners to send the events to.
-	 * 
-	 * FIXME: Don't like to use the EventRouter because it uses reflection. That's slow.
-	 */
-	private List<ToggleButtonGroupListener> listeners;
-
 	/**
 	 * Create an empty button group.
 	 */
 	public ButtonGroup() {
 	}
 
-	// TODO: continue this...
+	/**
+	 * Creates a button group with some default buttons.
+	 * @param buttonCaptions	the captions of the default buttons to add to the group.
+	 */
+	public ButtonGroup(String... buttonCaptions) {
+		for (String buttonCaption : buttonCaptions) {
+			addButton(buttonCaption);
+		}
+	}
+
+	/**
+	 * Creates a button group with some default buttons.
+	 * @param button	the default buttons to add to the group.
+	 */
+	public ButtonGroup(Button... buttons) {
+		for (Button button : buttons) {
+			addButton(button);
+		}
+	}
+
+	/**
+	 * Adds some buttons to the button group.
+	 * @param buttonCaptions	the captions of the default buttons to add to the group.
+	 */
+	public void addButtons(String... buttonCaptions) {
+		for (String buttonCaption : buttonCaptions) {
+			addButton(buttonCaption);
+		}
+	}
+
+	/**
+	 * Adds some buttons to the button group.
+	 * @param button	the default buttons to add to the group.
+	 */
+	public void addButtons(Button... buttons) {
+		for (Button button : buttons) {
+			addButton(button);
+		}
+	}
+
+	/**
+	 * Adds a button with the given caption to this button group. Group will be filled from left to right.
+	 * @param buttonCaption	the button caption.
+	 * @return	the button instance.
+	 */
+	public Button addButton(String buttonCaption) {
+		return addButton(new Button(buttonCaption));
+	}
+
+	/**
+	 * Adds a button to the group.
+	 * @param button	the button to add.
+	 * @return	the added button.
+	 */
+	public Button addButton(Button button) {
+		buttons.add(button);
+
+		setupButton(button);
+
+		if (delegate != null) {
+			delegate.buttonAdded(button);
+		}
+
+		return button;
+	}
+
+	/**
+	 * Adds a button with the given caption to this button group. Group will be filled from left to right.
+	 * @param buttonCaption	the button caption.
+	 * @param index			the index of the button in the group.
+	 * @return	the button instance.
+	 */
+	public Button addButton(String buttonCaption, int index) {
+		return addButton(new Button(buttonCaption), index);
+	}
 
 	/**
 	 * Adds a button at the specified index.
@@ -59,7 +127,26 @@ public class ButtonGroup implements Serializable {
 
 		setupButton(button);
 
+		if (delegate != null) {
+			delegate.buttonAdded(button, index);
+		}
+
 		return button;
+	}
+
+	/**
+	 * Remove the specified button from the group.
+	 * @param button	the button to remove.
+	 * @return	true if the button was removed, otherwise false if it doesn't belong to the group.
+	 */
+	public boolean removeButton(Button button) {
+		if (buttons.remove(button)) {
+			unsetupButton(button);
+
+			return true;
+		}
+
+		return false;
 	}
 
 	/*
@@ -69,7 +156,22 @@ public class ButtonGroup implements Serializable {
 		button.addClickListener(toggleClickListener);
 
 		if (selectedButton == null) {
-			toggleButton(button);
+			setSelectedButton(button);
+		}
+	}
+
+	/*
+	 * Unselect the button when removed and clear any reference with the group.
+	 */
+	private void unsetupButton(Button button) {
+		button.removeClickListener(toggleClickListener);
+
+		if (selectedButton == button) {
+			setSelectedButtonIndex(0);
+		}
+
+		if (delegate != null) {
+			delegate.buttonRemoved(button);
 		}
 	}
 
@@ -107,34 +209,53 @@ public class ButtonGroup implements Serializable {
 		return selectedButton;
 	}
 
+	/**
+	 * Gets the button count.
+	 * @return	the number of buttons in the group.
+	 */
+	public int countButtons() {
+		return buttons.size();
+	}
+
+	/**
+	 * Gets the buttons iterator.
+	 * @return	the buttons iterator.
+	 */
+	public Iterator<Button> iterator() {
+		return buttons.iterator();
+	}
+
 	/*
 	 * The toggled style name.
 	 */
-	private final static String CSS_STYLE_TOGGLED = "toggled"; // "v-pressed";// // "v-button-toggled";// 
+	private final static String CSS_STYLE_TOGGLED = "toggled"; //"v-pressed"; // "v-button-toggled"; //   
 
 	/**
 	 * Toggle the specified button.
 	 * 
-	 * FIXME: or name it setSelectedButton, or offer both APIs.
-	 * 
 	 * @param button	the button to toggle.
 	 * @return	true if the button was toggled, otherwise false.
 	 */
-	public boolean toggleButton(Button button) {
+	public boolean setSelectedButton(Button button) {
 		if (button != null && button != selectedButton && buttons.contains(button)) {
 
 			// Remove the selection from the previous selected button.
 			int previousButtonIndex = indexOfButton(selectedButton);
-			selectedButton.removeStyleName(CSS_STYLE_TOGGLED);
+			if (selectedButton != null) {
+				selectedButton.removeStyleName(CSS_STYLE_TOGGLED);
+			}
 
 			// Add the selection on the new selected button.
 			int selectedButtonIndex = indexOfButton(button);
 			button.addStyleName(CSS_STYLE_TOGGLED);
+			//button.setStyleName(CSS_STYLE_TOGGLED);
+
+			System.out.println("button.getStyleName(): " + button.getStyleName());
 
 			// Set the new selected button.
 			selectedButton = button;
 
-			notifyListener(selectedButtonIndex, previousButtonIndex);
+			notifySelectionListeners(selectedButtonIndex, previousButtonIndex);
 
 			return true;
 		}
@@ -145,13 +266,11 @@ public class ButtonGroup implements Serializable {
 	/**
 	 * Toggle the button at the specified index.
 	 * 
-	 * FIXME: or name it setSelectedButtonIndex, or offer both APIs.
-	 * 
 	 * @param buttonIndex	the index of the button to toggle.
 	 * @return	true if any button was toggled, otherwise false.
 	 */
-	public boolean toggleButtonIndex(int buttonIndex) {
-		return toggleButton(getButton(buttonIndex));
+	public boolean setSelectedButtonIndex(int buttonIndex) {
+		return setSelectedButton(getButton(buttonIndex));
 	}
 
 	/*
@@ -166,18 +285,25 @@ public class ButtonGroup implements Serializable {
 		public void buttonClick(ClickEvent event) {
 			System.out.println("buttonClick currentSelectedButtonIndex: " + indexOfButton(selectedButton));
 
-			toggleButton(event.getButton());
+			setSelectedButton(event.getButton());
 		}
 
 	}
+
+	/*
+	 * The list of listeners to send the events to.
+	 * 
+	 * FIXME: Don't like to use the EventRouter because it uses reflection. That's slow.
+	 */
+	private List<ButtonGroupSelectionListener> listeners;
 
 	/**
 	 * Add a listener to be notified when a selection change occur.
 	 * @param listener	the listener.
 	 */
-	public void addListener(ToggleButtonGroupListener listener) {
+	public void addSelectionListener(ButtonGroupSelectionListener listener) {
 		if (listeners == null) {
-			listeners = new LinkedList<ToggleButtonGroupListener>();
+			listeners = new LinkedList<ButtonGroupSelectionListener>();
 		}
 
 		listeners.add(listener);
@@ -187,7 +313,7 @@ public class ButtonGroup implements Serializable {
 	 * Remove the specified listener.
 	 * @param listener	the listener to remove.
 	 */
-	public void removeListener(ToggleButtonGroupListener listener) {
+	public void removeSelectionListener(ButtonGroupSelectionListener listener) {
 		if (listeners != null) {
 			listeners.remove(listener);
 		}
@@ -198,7 +324,7 @@ public class ButtonGroup implements Serializable {
 	 * @param selectedButtonIndex	the new selected button index.
 	 * @param previousButtonIndex	the previous selected button index.
 	 */
-	protected void notifyListener(int selectedButtonIndex, int previousButtonIndex) {
+	protected void notifySelectionListeners(int selectedButtonIndex, int previousButtonIndex) {
 		if (selectedButtonIndex == previousButtonIndex) {
 			return;
 		}
@@ -207,8 +333,8 @@ public class ButtonGroup implements Serializable {
 			return;
 		}
 
-		ToggleButtonGroupEvent event = new ToggleButtonGroupEvent(this, selectedButtonIndex, previousButtonIndex);
-		for (ToggleButtonGroupListener listener : listeners) {
+		ButtonGroupSelectionEvent event = new ButtonGroupSelectionEvent(this, selectedButtonIndex, previousButtonIndex);
+		for (ButtonGroupSelectionListener listener : listeners) {
 			listener.selectedButtonChanged(event);
 		}
 	}
@@ -216,20 +342,20 @@ public class ButtonGroup implements Serializable {
 	/**
 	 * Implement this to listen to the toggle button changes inside the ToggleButtonGroup.
 	 */
-	public static interface ToggleButtonGroupListener extends Serializable {
+	public static interface ButtonGroupSelectionListener extends Serializable {
 
 		/**
 		 * Called when the ToggleButtonGroup selection changes.
 		 * @param event	the event with the selection change details.
 		 */
-		void selectedButtonChanged(ToggleButtonGroupEvent event);
+		void selectedButtonChanged(ButtonGroupSelectionEvent event);
 
 	}
 
 	/**
 	 * Event object for the toggled state change.
 	 */
-	public static class ToggleButtonGroupEvent extends EventObject {
+	public static class ButtonGroupSelectionEvent extends EventObject {
 
 		// FIXME: 1. Should we add the button references? I think it's better with the index, because you can still
 		// access the button through the ButtonGroup API, while for a quick implementation the index is more handy.
@@ -251,7 +377,7 @@ public class ButtonGroup implements Serializable {
 		 * @param selectedButtonIndex	the index of the current toggled button.
 		 * @param previousButtonIndex	the index of the previously toggled button.
 		 */
-		public ToggleButtonGroupEvent(ButtonGroup source, int selectedButtonIndex, int previousButtonIndex) {
+		public ButtonGroupSelectionEvent(ButtonGroup source, int selectedButtonIndex, int previousButtonIndex) {
 			super(source);
 			this.selectedButtonIndex = selectedButtonIndex;
 			this.previousButtonIndex = previousButtonIndex;
@@ -281,6 +407,39 @@ public class ButtonGroup implements Serializable {
 			return selectedButtonIndex;
 		}
 
+	}
+
+	/*
+	 * The delegate to handle the changes to the buttons list.
+	 */
+	private ButtonGroupDelegate delegate;
+
+	/*
+	 * Sets the delegate.
+	 */
+	void setDelegate(ButtonGroupDelegate delegate) {
+		this.delegate = delegate;
+	}
+
+	/*
+	 * Implement this to listen when the contained buttons of the group are added or removed.
+	 */
+	interface ButtonGroupDelegate {
+
+		/*
+		 * Called when a button is added.
+		 */
+		void buttonAdded(Button button);
+
+		/*
+		 * Called when a button is added.
+		 */
+		void buttonAdded(Button button, int index);
+
+		/*
+		 * Called when a button is removed.
+		 */
+		void buttonRemoved(Button button);
 	}
 
 }
