@@ -252,7 +252,7 @@ public class ButtonGroup implements Serializable {
 			button.addStyleName(CSS_STYLE_TOGGLED);
 			//button.setStyleName(CSS_STYLE_TOGGLED);
 
-			System.out.println("button.getStyleName(): " + button.getStyleName());
+			// System.out.println("button.getStyleName(): " + button.getStyleName());
 
 			// Set the new selected button.
 			selectedButton = button;
