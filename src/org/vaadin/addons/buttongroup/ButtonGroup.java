@@ -3,9 +3,13 @@ package org.vaadin.addons.buttongroup;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.EventObject;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
+
+import org.vaadin.addons.buttongroup.shared.ButtonGroupStyle;
 
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
@@ -25,6 +29,11 @@ public class ButtonGroup implements Serializable {
 	 * The list of buttons in this group.
 	 */
 	private List<Button> buttons = new ArrayList<Button>();
+
+	/*
+	 * The toggle button extensions.
+	 */
+	private Map<Button, ToggleButtonExtension> toggleExtensions = new HashMap<>();
 
 	/*
 	 * The current selected button.
@@ -157,6 +166,9 @@ public class ButtonGroup implements Serializable {
 	private void setupButton(Button button) {
 		button.addClickListener(toggleClickListener);
 
+		// Create the extension to toggle the button on the client side as well.
+		toggleExtensions.put(button, ToggleButtonExtension.toggleButton(button));
+
 		if (selectedButton == null) {
 			setSelectedButton(button);
 		}
@@ -167,6 +179,12 @@ public class ButtonGroup implements Serializable {
 	 */
 	private void unsetupButton(Button button) {
 		button.removeClickListener(toggleClickListener);
+
+		// Removes the extension for the toggle button.
+		ToggleButtonExtension toggleButtonExtension = toggleExtensions.remove(button);
+		if (toggleButtonExtension != null) { // This should always be valid.
+			toggleButtonExtension.remove();
+		}
 
 		if (selectedButton == button) {
 			setSelectedButtonIndex(0);
@@ -227,11 +245,6 @@ public class ButtonGroup implements Serializable {
 		return buttons.iterator();
 	}
 
-	/*
-	 * The toggled style name.
-	 */
-	private final static String CSS_STYLE_TOGGLED = "toggled"; //"v-pressed"; // "v-button-toggled"; //   
-
 	/**
 	 * Toggle the specified button.
 	 * 
@@ -244,12 +257,17 @@ public class ButtonGroup implements Serializable {
 			// Remove the selection from the previous selected button.
 			int previousButtonIndex = indexOfButton(selectedButton);
 			if (selectedButton != null) {
-				selectedButton.removeStyleName(CSS_STYLE_TOGGLED);
+				selectedButton.removeStyleName(ButtonGroupStyle.CSS_STYLE_TOGGLED);
+			}
+
+			// FIXME: See if this is OK, or overall, how can it be optimized.
+			for (Button b : buttons) {
+				b.removeStyleName(ButtonGroupStyle.CSS_STYLE_TOGGLED);
 			}
 
 			// Add the selection on the new selected button.
 			int selectedButtonIndex = indexOfButton(button);
-			button.addStyleName(CSS_STYLE_TOGGLED);
+			button.addStyleName(ButtonGroupStyle.CSS_STYLE_TOGGLED);
 			//button.setStyleName(CSS_STYLE_TOGGLED);
 
 			// System.out.println("button.getStyleName(): " + button.getStyleName());

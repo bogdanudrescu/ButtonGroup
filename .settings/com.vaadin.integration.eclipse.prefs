@@ -1,5 +1,5 @@
-com.vaadin.integration.eclipse.previousCompileAction=widgetset
+com.vaadin.integration.eclipse.previousCompileAction=both
 com.vaadin.integration.eclipse.useLatestNightly=false
-com.vaadin.integration.eclipse.widgetsetCompilationEta=37660
+com.vaadin.integration.eclipse.widgetsetCompilationEta=40702
 com.vaadin.integration.eclipse.widgetsetDirty=false
 eclipse.preferences.version=1
