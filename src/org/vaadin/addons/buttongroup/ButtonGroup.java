@@ -166,8 +166,10 @@ public class ButtonGroup implements Serializable {
 	private void setupButton(Button button) {
 		button.addClickListener(toggleClickListener);
 
+		//*
 		// Create the extension to toggle the button on the client side as well.
 		toggleExtensions.put(button, ToggleButtonExtension.toggleButton(button));
+		//*/
 
 		if (selectedButton == null) {
 			setSelectedButton(button);
@@ -180,11 +182,13 @@ public class ButtonGroup implements Serializable {
 	private void unsetupButton(Button button) {
 		button.removeClickListener(toggleClickListener);
 
+		//*
 		// Removes the extension for the toggle button.
 		ToggleButtonExtension toggleButtonExtension = toggleExtensions.remove(button);
 		if (toggleButtonExtension != null) { // This should always be valid.
 			toggleButtonExtension.remove();
 		}
+		//*/
 
 		if (selectedButton == button) {
 			setSelectedButtonIndex(0);
