@@ -63,7 +63,7 @@ public class ToggleExtension extends AbstractExtension {
      * @param toggleStyle
      *            the toggle style.
      */
-    public void setToggleStyle(String toggleStyle) {
+    public void setToggledStyle(String toggleStyle) {
         getState(true).toggledStyle = toggleStyle;
     }
 
