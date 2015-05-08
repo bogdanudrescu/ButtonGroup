@@ -8,7 +8,7 @@
 	<!-- Super GWT client set -->
     <inherits name="com.vaadin.DefaultWidgetSet" />
 
-	<!-- Specify the paths for translatable code                    -->
+	<!-- Specify the paths for translatable code -->
 	<source path="client" />
 	<source path="shared" />
 
