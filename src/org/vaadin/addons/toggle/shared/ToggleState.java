@@ -23,6 +23,6 @@ public class ToggleState extends SharedState {
     /**
      * The name of the style to be used when button is toggled.
      */
-    public String toggledStyle = ToggleStyle.CSS_STYLE_TOGGLED;
+    public String selectedStyle = ToggleStyle.CSS_STYLE_TOGGLED;
 
 }

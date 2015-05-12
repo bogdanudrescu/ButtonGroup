@@ -124,11 +124,11 @@ public class ButtonGroup implements Serializable {
      * 
      * @param button
      *            the button to set the style for.
-     * @param toggleStyle
+     * @param selectedStyle
      *            the style to apply when the button is toggled.
      */
-    public void setToggledStyle(Button button, String toggleStyle) {
-        getToggleExtension(button).getState().toggledStyle = toggleStyle;
+    public void setSelectedStyle(Button button, String selectedStyle) {
+        getToggleExtension(button).getState().selectedStyle = selectedStyle;
     }
 
     /*

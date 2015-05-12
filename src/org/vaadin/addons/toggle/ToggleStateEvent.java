@@ -22,12 +22,12 @@ public class ToggleStateEvent {
      * 
      * @param source
      *            the source of the event.
-     * @param selected
-     *            the selected state of the {@link ToggleExtension}.
+     * @param buttonSelected
+     *            the selected state of the button.
      */
-    public ToggleStateEvent(ToggleExtension source, boolean selected) {
+    public ToggleStateEvent(ToggleExtension source, boolean buttonSelected) {
         this.source = source;
-        this.selected = selected;
+        this.selected = buttonSelected;
     }
 
     /**
@@ -44,7 +44,7 @@ public class ToggleStateEvent {
      * 
      * @return selected state of the button.
      */
-    public boolean isSelected() {
+    public boolean isButtonSelected() {
         return selected;
     }
 

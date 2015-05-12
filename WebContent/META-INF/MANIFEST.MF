@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 Vaadin-Stylesheets: VAADIN/addons/toogle/tooglebuttonstyles.scss
 Implementation-Title: ToggleButton
-Implementation-Version: 1.0.0
+Implementation-Version: 1.0 beta
 Vaadin-Widgetsets: org.vaadin.addons.toggle.ToggleButtonWidgetset
 Vaadin-Package-Version: 1
 Class-Path: 

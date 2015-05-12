@@ -70,9 +70,9 @@ public class ToggleExtensionConnector extends AbstractExtensionConnector {
      */
     private void setToggledStyle(boolean toggle) {
         if (toggle) {
-            button.addStyleName(getState().toggledStyle);
+            button.addStyleName(getState().selectedStyle);
         } else {
-            button.removeStyleName(getState().toggledStyle);
+            button.removeStyleName(getState().selectedStyle);
         }
     }
 

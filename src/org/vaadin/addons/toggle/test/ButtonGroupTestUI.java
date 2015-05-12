@@ -74,7 +74,7 @@ public class ButtonGroupTestUI extends UI {
 
             @Override
             public void toggleStateChanged(ToggleStateEvent event) {
-                label2.setValue("" + event.isSelected());
+                label2.setValue("" + event.isButtonSelected());
 
             }
         });

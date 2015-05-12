@@ -108,11 +108,11 @@ public class ToggleButton extends Button {
     /**
      * Sets the style activated when the button is selected.
      * 
-     * @param toggleStyle
+     * @param selectedStyle
      *            the toggle style.
      */
-    public void setToggledStyle(String toggleStyle) {
-        toggleExtension.setToggledStyle(toggleStyle);
+    public void setSelectedStyle(String selectedStyle) {
+        toggleExtension.setSelectedStyle(selectedStyle);
     }
 
 }

@@ -60,11 +60,11 @@ public class ToggleExtension extends AbstractExtension {
     /**
      * Sets the style activated when the button is selected.
      * 
-     * @param toggleStyle
+     * @param selectedStyle
      *            the toggle style.
      */
-    public void setToggledStyle(String toggleStyle) {
-        getState(true).toggledStyle = toggleStyle;
+    public void setSelectedStyle(String selectedStyle) {
+        getState(true).selectedStyle = selectedStyle;
     }
 
     @Override
